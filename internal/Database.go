@@ -10,7 +10,7 @@ import (
 
 type Database struct {
 	name string
-	data map[int]Task
+	data map[string]Task
 }
 
 func NewDatabase(name string) (*Database, error) {
@@ -24,7 +24,7 @@ func NewDatabase(name string) (*Database, error) {
 		return nil, fmt.Errorf("Error al leer el archivo JSON de BBDD: %w", err)
 	}
 
-	var data map[int]Task
+	var data map[string]Task
 	err = json.Unmarshal(file, &data)
 	if err != nil {
 		return nil, fmt.Errorf("Error al procesar el archivo JSON de BBDD: %w", err)
@@ -89,24 +89,33 @@ func (d *Database) CommitChanges() error {
 }
 
 func (d *Database) GetTask(id string) (*Task, error) {
-	for _, value := range d.data {
-		if value.Id.String() == id {
-			return &value, nil
-		}
+	value, valueFound := d.data[id]
+	if !valueFound {
+		return nil, fmt.Errorf("Tarea no encontrada: %s", id)
 	}
 
-	return nil, fmt.Errorf("Tarea no encontrada: %s", id)
+	return &value, nil
 }
 
 func (d *Database) UpdateTask(task *Task) error {
-	for key, value := range d.data {
-		if value.Id.String() == task.Id.String() {
-			task.UpdatedAt = time.Now()
-			d.data[key] = *task
-
-			return nil
-		}
+	value, valueFound := d.data[task.Id.String()]
+	if !valueFound {
+		return fmt.Errorf("Tarea no encontrada: %s", task.Id.String())
 	}
 
-	return fmt.Errorf("Tarea no encontrada: %s", task.Id.String())
+	value.UpdatedAt = time.Now()
+	d.data[task.Id.String()] = *task
+
+	return nil
+}
+
+func (d *Database) DeleteTask(id string) error {
+	_, valueFound := d.data[id]
+	if !valueFound {
+		return fmt.Errorf("Tarea no encontrada: %s", id)
+	}
+
+	delete(d.data, id)
+
+	return nil
 }

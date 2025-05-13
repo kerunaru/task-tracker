@@ -46,6 +46,14 @@ func (a *Application) HandleUserInput() (*Command, error) {
 			a.getArgOrEmpty(args, 2),
 		)
 	}
+
+	if a.getArgOrEmpty(args, 0) == "delete" {
+		command, err = NewDeleteCommand(
+			a.getArgOrEmpty(args, 0),
+			a.getArgOrEmpty(args, 1),
+		)
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("Error procesando la entrada del usuario: %w", err)
 	}
@@ -67,7 +75,7 @@ func (a *Application) AddTask(description string) error {
 		return fmt.Errorf("Error al instanciar la tarea: %w", err)
 	}
 
-	a.DB.data[len(a.DB.data)] = *newRecord
+	a.DB.data[newRecord.Id.String()] = *newRecord
 
 	if err := a.DB.CommitChanges(); err != nil {
 		return fmt.Errorf("Error al persistir los cambios en la base de datos: %w", err)
@@ -79,12 +87,25 @@ func (a *Application) AddTask(description string) error {
 func (a *Application) UpdateTask(id string, description string) error {
 	task, err := a.DB.GetTask(id)
 	if err != nil {
-		return fmt.Errorf("Error al obtener la tarea desde BBDD: %w", err)
+		return fmt.Errorf("Error al actualizar la tarea desde BBDD: %w", err)
 	}
 
 	task.Description = description
 
 	a.DB.UpdateTask(task)
+
+	if err := a.DB.CommitChanges(); err != nil {
+		return fmt.Errorf("Error al persistir los cambios en la base de datos: %w", err)
+	}
+
+	return nil
+}
+
+func (a *Application) DeleteTask(id string) error {
+	err := a.DB.DeleteTask(id)
+	if err != nil {
+		return fmt.Errorf("Error al eliminar la tarea desde BBDD: %w", err)
+	}
 
 	if err := a.DB.CommitChanges(); err != nil {
 		return fmt.Errorf("Error al persistir los cambios en la base de datos: %w", err)

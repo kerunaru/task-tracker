@@ -31,4 +31,10 @@ func main() {
 
 		os.Exit(0)
 	}
+
+	if command.Action == "delete" {
+		app.DeleteTask(command.Id)
+
+		os.Exit(0)
+	}
 }
