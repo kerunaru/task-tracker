@@ -72,8 +72,8 @@ func NewListCommand(action string, taskStatus string) (*Command, error) {
 		return nil, errors.New("Command action must be \"list\"!")
 	}
 
-	if !(taskStatus == "in-progress" || taskStatus == "done" || taskStatus == "todo") {
-		return nil, errors.New("Task status must be one of: in-progress, done or todo!")
+	if !(taskStatus == "" || taskStatus == "in-progress" || taskStatus == "done" || taskStatus == "todo") {
+		return nil, errors.New("Task status must be empty or one of: in-progress, done or todo!")
 	}
 
 	command := &Command{

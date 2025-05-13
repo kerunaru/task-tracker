@@ -119,3 +119,18 @@ func (d *Database) DeleteTask(id string) error {
 
 	return nil
 }
+
+func (d *Database) GetAllTasks(taskStatus string) map[string]Task {
+	if taskStatus == "" {
+		return d.data
+	}
+
+	tasks := make(map[string]Task)
+	for _, task := range d.data {
+		if task.Status == taskStatus {
+			tasks[task.Id.String()] = task
+		}
+	}
+
+	return tasks
+}

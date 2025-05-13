@@ -37,4 +37,10 @@ func main() {
 
 		os.Exit(0)
 	}
+
+	if command.Action == "list" {
+		app.ListTasks(command.TaskStatus)
+
+		os.Exit(0)
+	}
 }

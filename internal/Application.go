@@ -54,6 +54,13 @@ func (a *Application) HandleUserInput() (*Command, error) {
 		)
 	}
 
+	if a.getArgOrEmpty(args, 0) == "list" {
+		command, err = NewListCommand(
+			a.getArgOrEmpty(args, 0),
+			a.getArgOrEmpty(args, 1),
+		)
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("Error procesando la entrada del usuario: %w", err)
 	}
@@ -112,4 +119,11 @@ func (a *Application) DeleteTask(id string) error {
 	}
 
 	return nil
+}
+
+func (a *Application) ListTasks(taskStatus string) {
+	tasks := a.DB.GetAllTasks(taskStatus)
+	for _, task := range tasks {
+		fmt.Println(fmt.Sprintf("%s %s %s", task.Id.String(), task.Status, task.Description))
+	}
 }
