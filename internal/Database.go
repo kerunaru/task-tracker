@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 type Database struct {
@@ -85,4 +86,27 @@ func (d *Database) CommitChanges() error {
 	}
 
 	return nil
+}
+
+func (d *Database) GetTask(id string) (*Task, error) {
+	for _, value := range d.data {
+		if value.Id.String() == id {
+			return &value, nil
+		}
+	}
+
+	return nil, fmt.Errorf("Tarea no encontrada: %s", id)
+}
+
+func (d *Database) UpdateTask(task *Task) error {
+	for key, value := range d.data {
+		if value.Id.String() == task.Id.String() {
+			task.UpdatedAt = time.Now()
+			d.data[key] = *task
+
+			return nil
+		}
+	}
+
+	return fmt.Errorf("Tarea no encontrada: %s", task.Id.String())
 }

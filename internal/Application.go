@@ -32,10 +32,18 @@ func (a *Application) HandleUserInput() (*Command, error) {
 	var command *Command
 	var err error
 
-	if a.getArgOrDefault(args, 0) == "add" {
+	if a.getArgOrEmpty(args, 0) == "add" {
 		command, err = NewAddCommand(
-			a.getArgOrDefault(args, 0),
-			a.getArgOrDefault(args, 1),
+			a.getArgOrEmpty(args, 0),
+			a.getArgOrEmpty(args, 1),
+		)
+	}
+
+	if a.getArgOrEmpty(args, 0) == "update" {
+		command, err = NewUpdateCommand(
+			a.getArgOrEmpty(args, 0),
+			a.getArgOrEmpty(args, 1),
+			a.getArgOrEmpty(args, 2),
 		)
 	}
 	if err != nil {
@@ -43,6 +51,14 @@ func (a *Application) HandleUserInput() (*Command, error) {
 	}
 
 	return command, nil
+}
+
+func (a *Application) getArgOrEmpty(args []string, index int) string {
+	if index >= 0 && index < len(args) {
+		return args[index]
+	}
+
+	return ""
 }
 
 func (a *Application) AddTask(description string) error {
@@ -60,10 +76,19 @@ func (a *Application) AddTask(description string) error {
 	return nil
 }
 
-func (a *Application) getArgOrDefault(args []string, index int) string {
-	if index >= 0 && index < len(args) {
-		return args[index]
+func (a *Application) UpdateTask(id string, description string) error {
+	task, err := a.DB.GetTask(id)
+	if err != nil {
+		return fmt.Errorf("Error al obtener la tarea desde BBDD: %w", err)
 	}
 
-	return ""
+	task.Description = description
+
+	a.DB.UpdateTask(task)
+
+	if err := a.DB.CommitChanges(); err != nil {
+		return fmt.Errorf("Error al persistir los cambios en la base de datos: %w", err)
+	}
+
+	return nil
 }

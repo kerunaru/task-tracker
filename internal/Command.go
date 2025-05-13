@@ -2,12 +2,11 @@ package internal
 
 import (
 	"errors"
-	"strconv"
 )
 
 type Command struct {
 	Action          string
-	Id              int
+	Id              string
 	TaskDescription string
 	TaskStatus      string
 }
@@ -34,13 +33,8 @@ func NewUpdateCommand(action string, rawId string, taskDescription string) (*Com
 		return nil, errors.New("Command action must be \"update\"!")
 	}
 
-	id, err := strconv.Atoi(rawId)
-	if err != nil {
-		return nil, err
-	}
-
-	if id < 1 {
-		return nil, errors.New("Task ID must be greater than 0!")
+	if rawId == "" {
+		return nil, errors.New("Task ID must not be empty!")
 	}
 
 	if taskDescription == "" {
@@ -49,7 +43,7 @@ func NewUpdateCommand(action string, rawId string, taskDescription string) (*Com
 
 	command := &Command{
 		Action:          action,
-		Id:              id,
+		Id:              rawId,
 		TaskDescription: taskDescription,
 	}
 
@@ -61,18 +55,13 @@ func NewDeleteCommand(action string, rawId string) (*Command, error) {
 		return nil, errors.New("Command action must be \"delete\"!")
 	}
 
-	id, err := strconv.Atoi(rawId)
-	if err != nil {
-		return nil, err
-	}
-
-	if id < 1 {
+	if rawId == "" {
 		return nil, errors.New("Task ID must be greater than 0!")
 	}
 
 	command := &Command{
 		Action: action,
-		Id:     id,
+		Id:     rawId,
 	}
 
 	return command, nil

@@ -25,4 +25,10 @@ func main() {
 
 		os.Exit(0)
 	}
+
+	if command.Action == "update" {
+		app.UpdateTask(command.Id, command.TaskDescription)
+
+		os.Exit(0)
+	}
 }
