@@ -1,4 +1,4 @@
-![go](https://img.shields.io/github/go-mod/go-version/kerunaru/task-tracker) ![license](https://img.shields.io/github/license/kerunaru/task-tracker)
+[![Go Report Card](https://goreportcard.com/badge/github.com/kerunaru/task-tracker)](https://goreportcard.com/report/github.com/kerunaru/task-tracker) ![Go](https://img.shields.io/github/go-mod/go-version/kerunaru/task-tracker) ![License](https://img.shields.io/github/license/kerunaru/task-tracker) [![Release](https://img.shields.io/github/release/kerunaru/task-tracker)](https://github.com/kerunaru/task-tracker/releases/latest)
 
 # TASK TRACKER
 
