@@ -12,6 +12,9 @@ go run cmd/main.go add "Task description"
 
 # Update an existing task
 go run cmd/main.go update 638925e2-2fc6-11f0-b5c2-2800af748d54 "Updated task description"
+
+# Delete a task
+go run cmd/main.go delete 638925e2-2fc6-11f0-b5c2-2800af748d54
 ```
 
 This is a Go solution of [roadmap.sh Task Tracker exercise](https://roadmap.sh/projects/task-tracker)
