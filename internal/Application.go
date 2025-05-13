@@ -61,6 +61,14 @@ func (a *Application) HandleUserInput() (*Command, error) {
 		)
 	}
 
+	if a.getArgOrEmpty(args, 0) == "mark" {
+		command, err = NewMarkCommand(
+			a.getArgOrEmpty(args, 0),
+			a.getArgOrEmpty(args, 1),
+			a.getArgOrEmpty(args, 2),
+		)
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("Error procesando la entrada del usuario: %w", err)
 	}
@@ -126,4 +134,20 @@ func (a *Application) ListTasks(taskStatus string) {
 	for _, task := range tasks {
 		fmt.Println(fmt.Sprintf("%s %s %s", task.Id.String(), task.Status, task.Description))
 	}
+}
+
+func (a *Application) MarkTask(taskStatus string, id string) error {
+	task, err := a.DB.GetTask(id)
+	if err != nil {
+		return fmt.Errorf("Error al instanciar la tarea: %w", err)
+	}
+
+	task.Status = taskStatus
+	a.DB.UpdateTask(task)
+
+	if err := a.DB.CommitChanges(); err != nil {
+		return fmt.Errorf("Error al persistir los cambios en la base de datos: %w", err)
+	}
+
+	return nil
 }

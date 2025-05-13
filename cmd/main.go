@@ -43,4 +43,10 @@ func main() {
 
 		os.Exit(0)
 	}
+
+	if command.Action == "mark" {
+		app.MarkTask(command.TaskStatus, command.Id)
+
+		os.Exit(0)
+	}
 }
